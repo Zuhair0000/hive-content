@@ -26,12 +26,16 @@ For a travel agency targeting travellers from Yemen, Hive Content generated post
 - **Edit and delete** individual posts
 - **Secure accounts** with bcrypt password hashing and JWT authentication
 
-| Dashboard | Schedule |
-|---|---|
-| <img width="1882" height="953" alt="Screenshot 2026-11-09 at 5 11 54 PM" src="https://github.com/user-attachments/assets/fceeb0ae-40cd-4f10-8fab-6bae9ae8ba96" />
- | <img width="1908" height="955" alt="Screenshot 2026-11-09 at 5 12 20 PM" src="https://github.com/user-attachments/assets/206c82a1-c904-4e28-8fc3-9c9d8e87646e" />
- |
-
+<table>
+  <tr>
+    <th>Dashboard</th>
+    <th>Schedule</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/fceeb0ae-40cd-4f10-8fab-6bae9ae8ba96" alt="Dashboard" /></td>
+    <td><img src="https://github.com/user-attachments/assets/206c82a1-c904-4e28-8fc3-9c9d8e87646e" alt="Posting schedule" /></td>
+  </tr>
+</table>
 
 ## Tech stack
 **Frontend:** React · Vite · Tailwind CSS · React Router
