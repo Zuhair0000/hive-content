@@ -5,6 +5,15 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// Format an ISO timestamp as e.g. "9 Nov 2026" in the viewer's local time
+function formatDate(value) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) return "";
+  return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [drafts, setDrafts] = useState([]);
@@ -61,7 +70,7 @@ export default function Dashboard() {
         </div>
 
         <h2 className="text-3xl text-orange-500 font-bold py-10">
-          Previous Courses
+          Your Content Plans
         </h2>
 
         {drafts && drafts.length > 0 ? (
@@ -73,8 +82,10 @@ export default function Dashboard() {
                 onClick={() => navigate(`/content/${draft.id}`)}
               >
                 <h3 className="text-xl font-bold mb-2">{draft.title}</h3>
-                <p className="text-gray-400 mb-3 text-sm">{draft.created_at}</p>
-                <p className="text-gray-300 mb-3 text-sm">lessons preview</p>
+                <p className="text-gray-400 mb-3 text-sm">
+                  {formatDate(draft.created_at)}
+                </p>
+                <p className="text-gray-300 mb-3 text-sm">View plan</p>
               </div>
             ))}
           </div>
