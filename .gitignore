@@ -1,2 +1,17 @@
-backend/.env
-frontend/.env
+# Dependencies
+node_modules/
+
+# Environment files (keep the committed example)
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
