@@ -31,6 +31,7 @@ export default function Signup() {
       navigate("/login");
     } catch (err) {
       console.error(err);
+      toast.error(err.message);
     } finally {
       setIsloading(false);
     }

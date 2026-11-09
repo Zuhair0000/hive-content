@@ -1,12 +1,27 @@
-// const Groq = require("groq-sdk");
 const { GoogleGenAI } = require("@google/genai");
 const pool = require("../db");
 
-// const groq = new Groq({
-//   apiKey: process.env.GROQ_API_KEY,
-// });
-
 const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash";
+
+// Retry Gemini calls that fail with temporary errors (overloaded / rate limited)
+const RETRYABLE_STATUSES = [429, 500, 503];
+async function withRetry(fn, attempts = 3) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt >= attempts || !RETRYABLE_STATUSES.includes(err.status)) {
+        throw err;
+      }
+      const delayMs = 2000 * attempt;
+      console.warn(
+        `Gemini returned ${err.status}, retrying in ${delayMs / 1000}s (attempt ${attempt + 1}/${attempts})`
+      );
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+}
 
 exports.generateContent = async (req, res) => {
   const userId = req.user.id;
@@ -91,35 +106,31 @@ IMPORTANT RULES:
 `;
 
   try {
-    // const completion = await groq.chat.completions.create({
-    //   model: "openai/gpt-oss-20b",
-    //   messages: [
-    //     {
-    //       role: "system",
-    //       content: "You generate structured JSON responses only",
-    //     },
-    //     { role: "user", content: prompt },
-    //   ],
-    // });
+    const startedAt = Date.now();
+    const response = await withRetry(() =>
+      genAI.models.generateContent({
+        model: GEMINI_MODEL,
+        contents: prompt,
+        config: {
+          // Ask Gemini for raw JSON so the response can be parsed directly
+          responseMimeType: "application/json",
+          // Thinking adds minutes of latency and isn't needed for this task
+          thinkingConfig: { thinkingBudget: 0 },
+        },
+      })
+    );
+    const usage = response.usageMetadata || {};
+    console.log(
+      `Gemini ${GEMINI_MODEL}: ${((Date.now() - startedAt) / 1000).toFixed(1)}s, ` +
+        `${usage.candidatesTokenCount ?? "?"} output tokens, ` +
+        `${usage.thoughtsTokenCount ?? 0} thinking tokens`
+    );
 
-    const response = await genAI.models.generateContent({
-      // model: "gemini-2.5-pro",
-      model: "gemini-2.0-flash-exp",
-      contents: prompt,
-    });
-
-    let raw = response.text?.trim();
-
-    // Remove ```json or ``` if Groq wraps the output
-    raw = raw
-      .replace(/^```json\s*/i, "")
-      .replace(/```$/i, "")
-      .replace(/[\u0000-\u0019]+/g, " ") // remove control chars
-      .replace(/\r?\n|\r/g, " ") // remove line breaks
-      .replace(/\\"/g, '"') // fix escaped quotes
-      .trim();
-
-    // data = JSON.parse(raw);
+    // Strip a ```json fence in case the model adds one anyway
+    const raw = (response.text || "")
+      .trim()
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/\s*```$/, "");
 
     let data;
     try {
@@ -175,6 +186,9 @@ IMPORTANT RULES:
     });
   } catch (err) {
     console.error(err);
+    res
+      .status(500)
+      .json({ message: "Failed to generate content plan. Please try again." });
   }
 };
 

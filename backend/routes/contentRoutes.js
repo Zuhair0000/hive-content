@@ -5,7 +5,7 @@ const {
   getContentByDraftId,
   editContent,
   deleteContent,
-} = require("../controllers/CraeteContentController");
+} = require("../controllers/CreateContentController");
 const { verifyToken } = require("../middleware/authMiddleware");
 const router = express.Router();
 
