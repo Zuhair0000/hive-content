@@ -28,8 +28,10 @@ For a travel agency targeting travellers from Yemen, Hive Content generated post
 
 | Dashboard | Schedule |
 |---|---|
-| <img width="1882" height="953" alt="Screenshot 2026-11-09 at 5 11 54 PM" src="https://github.com/user-attachments/assets/ae734aeb-d779-4b49-9531-30982d5e4cb8" />
- | <img width="1908" height="955" alt="Screenshot 2026-11-09 at 5 12 20 PM" src="https://github.com/user-attachments/assets/9607a087-2f7e-47f7-9145-543c3887ecf7" /> |
+| <img width="1882" height="953" alt="Screenshot 2026-11-09 at 5 11 54 PM" src="https://github.com/user-attachments/assets/fceeb0ae-40cd-4f10-8fab-6bae9ae8ba96" />
+ | <img width="1908" height="955" alt="Screenshot 2026-11-09 at 5 12 20 PM" src="https://github.com/user-attachments/assets/206c82a1-c904-4e28-8fc3-9c9d8e87646e" />
+ |
+
 
 ## Tech stack
 **Frontend:** React · Vite · Tailwind CSS · React Router
