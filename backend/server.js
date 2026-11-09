@@ -11,7 +11,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_API_URL,
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 
